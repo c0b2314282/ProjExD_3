@@ -9,6 +9,7 @@ import pygame as pg
 WIDTH = 1100  # ゲームウィンドウの幅
 HEIGHT = 650  # ゲームウィンドウの高さ
 NUM_OF_BOMBS = 5 #爆弾の数
+Onigiri = 2
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -84,7 +85,7 @@ class Bird:
             self.rct.move_ip(-sum_mv[0], -sum_mv[1])
         if not (sum_mv[0] == 0 and sum_mv[1] == 0):
             self.img = __class__.imgs[tuple(sum_mv)]
-            self.directions = tuple(sum_mv)
+            self.dire = tuple(sum_mv)
         screen.blit(self.img, self.rct)
 
 
@@ -181,7 +182,24 @@ class Score:
         scoreの加算
         """
         self.score += 1
-    
+
+        """
+
+        追加: ゲームクリア画面
+
+        """
+        screen = pg.display.set_mode((WIDTH, HEIGHT))  
+        bird = Bird((300, 200))
+
+        if self.score == NUM_OF_BOMBS:
+            bird.change_img(6, screen)
+            fonto = pg.font.Font(None, 80)
+            txt = fonto.render("CLEAR", True, (255, 255, 0))
+            screen.blit(txt, [WIDTH // 2 - 150, HEIGHT // 2])
+            pg.display.update()
+            time.sleep(3)
+
+
 
 class Explosion:
     """
@@ -243,8 +261,7 @@ def main():
                 pg.display.update()
                 time.sleep(1)
                 return
-            
-                    
+
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
         #beam.update(screen)   
@@ -267,6 +284,22 @@ def main():
         pg.display.update()
         tmr += 1
         clock.tick(50)
+
+class Onigiri:
+    def __init__(self, color: tuple[int, int, int], int):
+        """
+        引数に基づき爆弾円Surfaceを生成する
+        引数1 color：爆弾円の色タプル
+        引数2 rad：爆弾円の半径
+        """
+        self.img = pg.Surface((2*rad, 2*rad))
+        pg.draw.polygon((255,255,255), [(320,80),(182,320),(458,320)], 0)
+        self.img.set_colorkey((0, 0, 0))
+        self.rct = self.img.get_rect()
+        self.rct.center = random.randint(0, WIDTH), random.randint(0, HEIGHT)
+        self.vx, self.vy = +5, +5
+
+
 
 
 if __name__ == "__main__":
