@@ -95,9 +95,9 @@ class Beam: # ビームクラス:
     #     引数 bird：ビームを放つこうかとん（Birdインスタンス）
     #     """
         self.img = pg.image.load(f"fig/beam.png") #     self.img = pg.画像のロード(f"fig/beam.png")
-        self.rct = self.img.get_rect()#     self.rct = self.img.Rectの取得()
-        self.rct.centery = bird.rct.centery #     self.ビームの中心縦座標 = こうかとんの中心縦座標
-        self.rct.left = bird.rct.right #     self.ビームの左座標 = こうかとんの右座標
+        self.rct = self.img.get_rect()  #self.rct = self.img.Rectの取得()
+        self.rct.centery = bird.rct.centery     #self.ビームの中心縦座標 = こうかとんの中心縦座標
+        self.rct.left = bird.rct.right      #aself.ビームの左座標 = こうかとんの右座標
         self.vx, self.vy = +5, 0 
 
     def update(self, screen: pg.Surface):# def update(self, screen: pg.Surface):
@@ -224,10 +224,6 @@ def main():
                     pg.display.update()
                     time.sleep(1)
                     return
-            
-
-        
-        
         
         if bird.rct.colliderect(bomb.rct):
             # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
