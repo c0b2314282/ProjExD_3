@@ -239,8 +239,7 @@ def main():
                 pg.display.update()
                 time.sleep(1)
                 return
-            
-                    
+                        
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
         #beam.update(screen)   
@@ -253,12 +252,17 @@ def main():
             beam.update(screen)
         for beam in m_beams:
             beam.update(screen)
+
+            """
+            爆発エフェクトについて
+            """
         add_explosions = []
         for x in explosions:
             x.update(screen)
             if x.life > 0:
                 add_explosions.append(x)
         explosions = add_explosions 
+
         score.update(screen)
         pg.display.update()
         tmr += 1
