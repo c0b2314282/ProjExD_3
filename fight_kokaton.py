@@ -165,6 +165,22 @@ class Score:
         scoreの加算
         """
         self.score += 1
+    
+
+class Explosion:
+    def __init__(self, center: tuple[int, int]):
+        self.imgs = [  
+            pg.image.load("fig/explosion.gif"),
+            pg.transform.flip(pg.image.load("fig/explosion.gif"), True, False)
+        ]
+        self.rct = self.imgs[0].get_rect()
+        self.rct.center = center
+        self.life = 20
+    
+    def update(self, screen: pg.Surface):
+        if self.life > 0:
+            screen.blit(self.imgs[self.life // 10 % 2], self.rct)
+            self.life -= 1
 
 
 def main():
@@ -177,6 +193,7 @@ def main():
     score = Score()
     beam = None
     m_beams = []
+    explosions = []
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -190,26 +207,27 @@ def main():
         screen.blit(bg_img, [0, 0])
 
         for bomb in bombs:
-            if bird.rct.colliderect(bomb.rct):
-            # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
-                bird.change_img(8, screen)
-                fonto = pg.font.Font(None, 80)
-                txt = fonto.render("Game Over", True, (255, 0, 0))
-                screen.blit(txt, [WIDTH // 2 - 150, HEIGHT // 2])
-                pg.display.update()
-                time.sleep(1)
-                return
+            for beam in m_beams:
+                if bomb.rct.colliderect(beam.rct):
+                    explosions.append(Explosion(bomb.rct.center))
+                    bombs.remove(bomb)
+                    m_beams.remove(beam)
+                    score.score_plus()
+                    break
 
-        for i, bomb in enumerate(bombs):
-            for j, beam in enumerate(m_beams):
-                if beam is not None and bomb is not None:
-                    if beam.rct.colliderect(bomb.rct):
-                        beam = None
-                        m_beams[j] = None
-                        bombs[i] = None
-                        bird.change_img(6, screen)
-                        score.score_plus()
-                        pg.display.update()
+                if bird.rct.colliderect(bomb.rct):
+            # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
+                    bird.change_img(8, screen)
+                    fonto = pg.font.Font(None, 80)
+                    txt = fonto.render("Game Over", True, (255, 0, 0))
+                    screen.blit(txt, [WIDTH // 2 - 150, HEIGHT // 2])
+                    pg.display.update()
+                    time.sleep(1)
+                    return
+            
+
+        
+        
         
         if bird.rct.colliderect(bomb.rct):
             # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
@@ -231,8 +249,14 @@ def main():
 
         for beam in m_beams:
             beam.update(screen)
-        
-        
+
+        add_explosions = []
+        for x in explosions:
+            x.update(screen)
+            if x.life > 0:
+                add_explosions.append(x)
+        explosions = add_explosions
+
         score.update(screen)
 
         pg.display.update()
