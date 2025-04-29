@@ -117,10 +117,6 @@ class Beam: # ビームクラス:
         self.rct.move_ip(self.vx, self.vy)
         screen.blit(self.img, self.rct)
 
-    #     """
-    #     ビームを速度ベクトルself.vx, self.vyに基づき移動させる
-    #     引数 screen：画面Surface
-    #     """
         if check_bound(self.rct) == (True, True):
             self.rct.move_ip(self.vx, self.vy)
             screen.blit(self.img, self.rct)    
@@ -262,11 +258,11 @@ def main():
             x.update(screen)
             if x.life > 0:
                 add_explosions.append(x)
-        explosions = add_explosions
+        explosions = add_explosions 
         score.update(screen)
         pg.display.update()
         tmr += 1
-        clock.tick(50)
+        clock.tick(50) 
 
 
 if __name__ == "__main__":
