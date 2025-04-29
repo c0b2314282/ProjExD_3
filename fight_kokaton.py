@@ -7,6 +7,7 @@ import pygame as pg
 
 WIDTH = 1100  # ゲームウィンドウの幅
 HEIGHT = 650  # ゲームウィンドウの高さ
+NUM_OF_BOMBS = 5
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -97,7 +98,7 @@ class Beam: # ビームクラス:
         self.rct = self.img.get_rect()#     self.rct = self.img.Rectの取得()
         self.rct.centery = bird.rct.centery #     self.ビームの中心縦座標 = こうかとんの中心縦座標
         self.rct.left = bird.rct.right #     self.ビームの左座標 = こうかとんの右座標
-        self.vx, self.vy = +5, 0 #     self.vx, self.vy = +5, 0
+        self.vx, self.vy = +5, 0 
 
     def update(self, screen: pg.Surface):# def update(self, screen: pg.Surface):
     #     """
@@ -146,6 +147,7 @@ def main():
     bg_img = pg.image.load("fig/pg_bg.jpg")
     bird = Bird((300, 200))
     bomb = Bomb((255, 0, 0), 10)
+    bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)] 
     beam = None
     clock = pg.time.Clock()
     tmr = 0
@@ -157,6 +159,17 @@ def main():
             #     # スペースキー押下でBeamクラスのインスタンス生成
                  beam = Beam(bird)            
         screen.blit(bg_img, [0, 0])
+
+        for bomb in bombs:
+            if bird.rct.colliderect(bomb.rct):
+            # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
+                bird.change_img(8, screen)
+                fonto = pg.font.Font(None, 80)
+                txt = fonto.render("Game Over", True, (255, 0, 0))
+                screen.blit(txt, [WIDTH // 2 - 150, HEIGHT // 2])
+                pg.display.update()
+                time.sleep(1)
+                return
 
         for i, bomb in enumerate(bombs):
             if beam is not None:
